@@ -1,59 +1,123 @@
-# WeatherApp
+# WeatherApp — Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+A weather application built with Angular 17 and Angular Material, featuring real-time weather data from the OpenWeatherMap API, an SVG-based wind animation layer, search history, and a clean glass-morphism UI.
 
-## Development server
+---
 
-To start a local development server, run:
+## Preview
+
+> Search any city to get live weather — temperature, humidity, wind speed with animated wind streaks, and more.
+
+---
+
+## Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Angular 17 |
+| UI Library | Angular Material |
+| Styling | SCSS, Glass-morphism |
+| API | OpenWeatherMap |
+| Deployment | GitHub Pages |
+
+---
+
+## Project Structure
+
+```
+weather-app/
+└── src/
+    ├── app/
+    │   ├── components/         # Reusable UI — loading spinner, error message
+    │   ├── models/             # TypeScript interfaces (WeatherData)
+    │   ├── pipes/              # Custom windSpeed pipe
+    │   ├── services/           # WeatherService (HttpClient + RxJS)
+    │   └── weather-search/     # Main feature component
+    │       ├── weather-search.component.ts
+    │       ├── weather-search.component.html
+    │       └── weather-search.component.scss
+    └── environments/
+        ├── environment.ts
+        └── environment.development.ts
+```
+
+---
+
+## Features
+
+- City search with live weather data from OpenWeatherMap
+- Displays temperature, feels-like, min/max, humidity, and wind speed
+- **SVG wind animation layer** — 13 curved SVG path elements rendered directly on the weather card, animating via `stroke-dashoffset` to simulate actual wind movement. Wind intensity is driven by the live `windSpeed` value and mapped to four CSS classes (`wind-calm`, `wind-moderate`, `wind-strong`, `wind-extreme`), each adjusting stroke opacity, width, and animation duration. The streaks are always visible even at low wind speeds, with an edge-fade gradient mask so they dissolve naturally at the card boundaries.
+- Centralized error handling with retry support
+- Loading spinner component
+- Search history persisted via localStorage
+- Angular Material components — `mat-card`, `mat-chip`, `mat-progress-spinner`, `mat-icon`
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js `v18+`
+- Angular CLI — `npm install -g @angular/cli`
+- An [OpenWeatherMap API key](https://openweathermap.org/api) (free tier)
+
+### Installation
+
+```bash
+git clone https://github.com/DhyanaSuresh/weather-app.git
+cd weather-app
+npm install
+```
+
+### Configuration
+
+In `src/environments/environment.development.ts`, add your API key:
+
+```ts
+export const environment = {
+  production: false,
+  weatherApiUrl: 'https://api.openweathermap.org/data/2.5',
+  weatherApiKey: 'your_api_key_here',
+};
+```
+
+> Note: This exposes your key in the browser's Network tab during development. For production, route requests through a backend proxy and remove the key from the frontend entirely.
+
+### Running Locally
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+App runs at `http://localhost:4200`
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Deployment
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Deployed to GitHub Pages via `angular-cli-ghpages`:
 
 ```bash
-ng generate --help
+ng build --base-href "https://DhyanaSuresh.github.io/weather-app/"
+npx angular-cli-ghpages --dir=dist/weather-app
 ```
 
-## Building
+---
 
-To build the project run:
+## Angular Concepts Covered
 
-```bash
-ng build
-```
+This project was built as a structured learning exercise. Concepts implemented across phases:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Components, Modules, and project architecture
+- Two-way data binding, property binding, event binding
+- Structural directives — `*ngIf`, `*ngFor`
+- Services and Dependency Injection
+- `HttpClient` with RxJS Observables
+- `catchError` and `retry` operators
+- Custom Pipe (`windSpeed`)
+- `@Input()` and `@Output()` with `EventEmitter`
+- Environment-based configuration
+- localStorage for persistent state
+- SVG animations with CSS custom properties and keyframes
