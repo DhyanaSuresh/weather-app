@@ -1,0 +1,161 @@
+<!-- src/app/weather-search/weather-search.component.html -->
+<div class="search-container">
+ <h2 class="search-title">Search for a city</h2>
+
+ <!-- Search Input Row -->
+ <div class="search-row">
+ <input
+ type="text"
+ class="search-input"
+ placeholder="Enter city name..."
+ [(ngModel)]="cityName" 
+ (keypress)="onKeyPress($event)"
+ /> <!-- [(ngModel)] : two way binding , (keypress) : event binding-DOM that fires on every key press , $event is Angular's way of
+passing the browser's event object to your method.-->
+
+ <!-- ADDED mat-button + mat-icon -->
+ <button class="search-btn" mat-raised-button color="primary" (click)="onSearch()">
+   <mat-icon>cloud</mat-icon> 🌤 Search
+ </button> <!--Event binding for the click event-->
+ </div>
+
+ <!--REMOVING THIS AS WE ADDED COMPONENTS FOR ERROR MESSAGE AND LOADING SPINNER-->
+  <!-- Loading State -->
+ <!--div class="loading-state" *ngIf="isLoading">
+ <div class="spinner"></div>
+ <p>Fetching weather data...</p>
+ </div-->
+
+ <!--Error State -->
+ <!--div class="error-state" *ngIf="errorMessage">
+ <p>❌ {{ errorMessage }}</p>
+ </div-->
+
+ <!-- ADDED mat-progress-spinner -->
+ <div *ngIf="isLoading" class="spinner-container">
+  <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+ </div>
+
+ <app-loading-spinner
+  *ngIf="isLoading"
+  message="Fetching weather data..."></app-loading-spinner>
+
+<app-error-message
+  *ngIf="errorMessage"
+  [message]="errorMessage"
+  (retry)="onRetry()"></app-error-message>
+
+ <!-- ADDED mat-card (wrapped weather-card) -->
+ <mat-card 
+  *ngIf="weatherData && !isLoading" 
+  class="weather-card"
+  [ngClass]="{
+    'wind-calm': weatherData.windSpeed < 20,
+    'wind-moderate': weatherData.windSpeed >= 20 && weatherData.windSpeed < 40,
+    'wind-strong': weatherData.windSpeed >= 40 && weatherData.windSpeed < 70,
+    'wind-extreme': weatherData.windSpeed >= 70
+  }"> <!--The * prefix means it changes the DOM structure. *ngIf completely adds or removes the element from the DOM based on whether hasSearched is true. When false, the element does not exist in the page at all.-->
+
+  <!-- ADDED: SVG wind layer — curved streaks behind all card content -->
+  <div class="wind-svg-layer">
+    <svg viewBox="0 0 660 340" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Fade mask: streaks dissolve at left/right edges like real wind gusts -->
+        <linearGradient id="fadeMask" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+          <stop offset="10%"  stop-color="white" stop-opacity="1"/>
+          <stop offset="85%"  stop-color="white" stop-opacity="1"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+        <mask id="edgeMask">
+          <rect width="660" height="340" fill="url(#fadeMask)"/>
+        </mask>
+      </defs>
+      <g mask="url(#edgeMask)">
+        <!-- Primary streaks — left to right S-curves, visible at ALL wind levels -->
+        <path class="wind-streak"           d="M -80 55   C 60 30,  200 80,  360 50  S 560 20,  760 60"  stroke-dasharray="520 180" style="--dur:7s;   --delay:0s"/>
+        <path class="wind-streak"           d="M -60 110  C 80 90,  220 140, 380 110 S 580 70,  780 115" stroke-dasharray="480 220" style="--dur:5.5s; --delay:0.8s"/>
+        <path class="wind-streak"           d="M -100 165 C 100 140,280 200, 440 162 S 640 120, 820 170" stroke-dasharray="560 160" style="--dur:6.2s; --delay:1.6s"/>
+        <path class="wind-streak"           d="M -50 215  C 90 190, 240 255, 420 215 S 620 165, 800 220" stroke-dasharray="500 200" style="--dur:8s;   --delay:0.4s"/>
+        <path class="wind-streak"           d="M -90 275  C 70 250, 220 305, 410 268 S 620 220, 820 278" stroke-dasharray="540 160" style="--dur:6.8s; --delay:2.1s"/>
+        <path class="wind-streak"           d="M -30 32   C 120 10, 280 55,  460 28  S 680 -5,  850 35"  stroke-dasharray="400 260" style="--dur:9s;   --delay:3s"/>
+        <path class="wind-streak"           d="M -70 305  C 100 285,300 330, 500 298 S 700 255, 870 308" stroke-dasharray="460 200" style="--dur:7.5s; --delay:1.2s"/>
+        <!-- Secondary streaks — right to left, activated at .wind-strong and .wind-extreme -->
+        <path class="wind-streak secondary" d="M 820 80   C 660 55, 480 105, 300 78  S 80 35,  -80 82"  stroke-dasharray="440 220" style="--dur:4.5s; --delay:0.6s"/>
+        <path class="wind-streak secondary" d="M 840 195  C 680 170,490 218, 310 192 S 90 145, -80 198" stroke-dasharray="480 180" style="--dur:5s;   --delay:1.4s"/>
+        <path class="wind-streak secondary" d="M 830 255  C 660 230,460 280, 270 248 S 60 200, -70 258"  stroke-dasharray="420 240" style="--dur:3.8s; --delay:2.3s"/>
+        <!-- Tertiary fine wisps — activated at .wind-extreme only -->
+        <path class="wind-streak tertiary"  d="M -40 142  C 140 118,320 162, 510 136 S 720 96,  910 144" stroke-dasharray="360 280" style="--dur:1.8s; --delay:0.15s"/>
+        <path class="wind-streak tertiary"  d="M -60 238  C 130 212,330 258, 520 232 S 730 190, 930 240" stroke-dasharray="380 260" style="--dur:2s;   --delay:0.55s"/>
+        <path class="wind-streak tertiary"  d="M 900 130  C 720 108,520 152, 320 128 S 90 84,  -80 132"  stroke-dasharray="340 300" style="--dur:1.5s; --delay:0.3s"/>
+      </g>
+    </svg>
+  </div>
+  <!-- END ADDED: wind SVG layer -->
+
+  <!-- ── TOP ROW: city name left, icon right ── -->
+  <div class="card-top">
+    <div class="city-info">
+      <h2 class="city-name">{{ weatherData.city }}</h2>
+      <span class="country">{{ weatherData.country }}</span>
+    </div>
+    <!-- Weather icon top-right — always shows, no broken placeholder issue -->
+    <img
+      class="weather-icon"
+      [src]="'https://openweathermap.org/img/wn/' + weatherData.icon + '@2x.png'"
+      [alt]="weatherData.description"
+      onerror="this.style.display='none'"
+    /> <!-- Property binding for the image src. OpenWeatherMap provides weather icons — we construct the URL using the icon code from the API.
+            @2x gives a higher resolution image. onerror hides the broken placeholder if icon fails. -->
+  </div>
+
+  <!-- ── DESCRIPTION inline row ── -->
+  <p class="description">{{ weatherData.description | titlecase }}</p>
+  <!--The | is a pipe operator. titlecase is a built-in Angular
+  pipe that capitalizes the first letter of each word. So "partly cloudy" becomes "Partly Cloudy".
+  Pipes transform display values without changing the underlying data.-->
+
+  <!-- ── TEMPERATURE ── -->
+  <div class="temperature">
+    <span class="temp-main">{{ weatherData.temperature }}°C</span>
+    <span class="feels-like">Feels like {{ weatherData.feelsLike }}°C</span>
+  </div>
+
+  <div class="temp-range">
+    <span>↑ {{ weatherData.tempMax }}°C</span>
+    <span>↓ {{ weatherData.tempMin }}°C</span>
+  </div>
+
+  <!-- ADDED: divider before detail cards -->
+  <div class="card-divider"></div>
+
+  <!-- ── DETAIL CARDS — all three consistent ── -->
+  <div class="weather-details">
+
+    <!-- Card 1: Humidity -->
+    <div class="detail-item">
+      <span class="detail-icon">💧</span>
+      <span class="detail-label">Humidity</span>
+      <span class="detail-value">{{ weatherData.humidity }}%</span>
+    </div>
+
+    <!-- Card 2: Wind speed raw -->
+    <div class="detail-item">
+      <span class="detail-icon">💨</span>
+      <span class="detail-label">Wind</span>
+      <!-- ADDED mat-chip -->
+      <mat-chip class="detail-chip">{{ weatherData.windSpeed }} km/h</mat-chip>
+    </div>
+
+    <!-- Card 3: Wind label via pipe -->
+    <div class="detail-item">
+      <span class="detail-icon">🌬️</span>
+      <span class="detail-label">Wind Speed</span>
+      <!-- ADDED mat-chip + pipe -->
+      <mat-chip class="detail-chip">{{ weatherData.windSpeed | windSpeed }}</mat-chip>
+    </div>
+
+  </div>
+
+</mat-card>
+</div>

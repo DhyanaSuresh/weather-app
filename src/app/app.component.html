@@ -1,0 +1,11 @@
+<!-- src/app/app.component.html -->
+<div class="app-container">
+ <header class="app-header">
+ <h1>🌤 Weather App</h1>
+ <p>Get live weather for any city</p>
+ </header>
+ <main class="app-main">
+ <app-weather-search /> <!--Uses the selector defined in WeatherSearchComponent's @Component decorator-->
+ </main>
+</div>
+<router-outlet /> <!--This is a placeholder where Angular Router will inject the appropriate component based on the URL-->

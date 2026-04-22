@@ -1,0 +1,16 @@
+<div class="history-container" *ngIf="history.length > 0">
+  <div class="history-header">
+    <h3>Recent Searches</h3>
+    <button class="clear-btn" (click)="onClear()">Clear</button>
+  </div>
+  <div class="history-list">
+    <button
+      class="history-item"
+      *ngFor="let city of history" 
+      (click)="onCityClick(city)"
+    > <!--"let city" creates a local variable for each iteration holding the current item. 
+    This is Angular's equivalent of a for...of loop in your template.-->
+    🌤 {{ city }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 20px;
+  text-align: center;
+
+  .error-icon {
+    font-size: 2rem;
+  }
+
+  .error-text {
+    color: #EF4444;
+    font-weight: 500;
+  }
+
+  .retry-btn {
+    padding: 10px 24px;
+    background: #EF4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+}

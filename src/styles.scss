@@ -1,0 +1,558 @@
+/* ==============================================
+   IMPORTS & VARIABLES //variables to reuse
+============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap'); //Loads Inter font
+ 
+$purple-start : #5a67d8;
+$purple-mid   : #6e5ec0;
+$purple-end   : #7f53ac;
+$white-12     : rgba(255, 255, 255, 0.12);
+$white-18     : rgba(255, 255, 255, 0.18);
+$white-28     : rgba(255, 255, 255, 0.28);
+
+/* ==============================================
+   HERO HEADER (TITLE SECTION)
+============================================== */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+  min-height: 100vh;
+}
+
+/* container */
+.app-hero {
+  text-align: center;
+  padding: 28px 16px 20px;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+/* Main title */
+.app-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  /* gradient text */
+  background: linear-gradient(135deg, $purple-start, $purple-end);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  position: relative;
+}
+
+/* glow behind title */
+.app-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 180px;
+  height: 60px;
+
+  background: radial-gradient(circle, rgba(127,83,172,0.25), transparent 70%);
+  filter: blur(18px);
+  z-index: -1;
+}
+
+/* Subtitle */
+.app-subtitle {
+  font-size: 1rem;
+  color: #6b6b8a;
+  margin-top: 8px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* small divider line */
+.app-hero::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin: 14px auto 0;
+
+  background: linear-gradient(135deg, $purple-start, $purple-end);
+  border-radius: 10px;
+  opacity: 0.6;
+}
+
+/* animation */
+.app-title {
+  animation: fadeSlideDown 0.5s ease;
+}
+
+.app-subtitle {
+  animation: fadeSlideDown 0.65s ease;
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==============================================
+   OPTIONAL ENTRY ANIMATION
+============================================== */
+.app-title {
+  animation: fadeSlide 0.5s ease;
+}
+
+.app-subtitle {
+  animation: fadeSlide 0.6s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+/* ==============================================
+   HOST
+============================================== */
+:host {
+  font-family: 'Inter', sans-serif;
+  display: block;
+}
+ 
+/* =========================
+   MAIN CARD — GLASS UI
+========================= */
+.search-card {
+  max-width: 640px;
+  margin: 60px auto;
+  padding: 24px;
+  border-radius: 24px; 
+
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px); // -webkit- is a browser prefix, together they create glassmorphism effect
+
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* =========================
+   TITLE
+========================= */
+mat-card-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   INPUT
+========================= */
+.search-field {
+  width: 100%;
+  margin-bottom: 18px;
+
+  ::ng-deep .mat-mdc-text-field-wrapper { //ng-deep overrides angular material components , .mat... internal class to access
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ==============================================
+   SEARCH BUTTON //!important forces my style to win over angular's mat style
+============================================== */
+.search-btn {
+  height: 48px !important;
+  min-width: 116px;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.88rem !important;
+  letter-spacing: 0.2px;
+ 
+  background: linear-gradient(135deg, $purple-start 0%, $purple-end 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(90, 103, 216, 0.36) !important;
+ 
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+ 
+  mat-icon {
+    font-size: 16px !important;
+    height: 16px   !important;
+    width: 16px    !important;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+ 
+  &:hover:not([disabled]) { //When mouse is over the button AND it’s NOT disabled
+    transform: translateY(-2px); //slightly up (lift effect)
+    box-shadow: 0 8px 22px rgba(90, 103, 216, 0.46) !important;
+  }
+  &:active:not([disabled]) { transform: translateY(0); } //When button is being clicked , pushes back down
+  &[disabled] { opacity: 0.52 !important; transform: none !important; }
+}
+
+/* ==============================================
+   SPINNER
+============================================== */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: 18px 0 6px;
+ 
+  ::ng-deep circle { stroke: $purple-start !important; } //stroke outline clr of svg
+}
+/* ==============================================
+   WEATHER CARD
+============================================== */
+.weather-card {
+  position: relative; //so that the child will position itself inside it properly
+  overflow: hidden;
+  margin-top: 4px;
+  padding: 0 !important;          // override mat-card default padding
+  border-radius: 18px !important;
+ 
+  background: linear-gradient(145deg, #5a67d8 0%, #6e5ec0 40%, #7f53ac 100%);
+  color: white;
+  border: none !important;
+ 
+  box-shadow:
+    0 14px 44px rgba(90, 103, 216, 0.36),
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+ 
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); //fadeInUp is name of animation , smooth up
+ 
+  /* top-right radial highlight */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0; //top bottom right left
+    border-radius: inherit; //to box shape
+    background: radial-gradient(
+      ellipse 65% 40% at 96% 4%,
+      rgba(255,255,255,0.08) 0%,
+      transparent 60%
+    );
+    pointer-events: none; //doesnt block any clicks
+    z-index: 1; //controls stacking .. above bg below content
+  }
+ 
+  // every direct child above the SVG wind layer
+  > *:not(.wind-svg-layer) {
+    position: relative;
+    z-index: 2;
+  }
+}
+ 
+/* ==============================================
+   WIND SVG LAYER
+============================================== */
+.wind-svg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+ 
+  svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+ 
+/* ── base streak ── */
+.wind-streak {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+ 
+/* ── calm < 20 km/h ── */
+.wind-calm {
+  .wind-streak            { stroke: rgba(255,255,255,0.16); stroke-width: 1.5;
+                            animation: streakSlide var(--dur,8s) ease-in-out var(--delay,0s) infinite; }
+  .wind-streak.secondary,
+  .wind-streak.tertiary   { display: none; }
+}
+ 
+/* ── moderate 20–40 km/h ── */
+.wind-moderate {
+  .wind-streak            { stroke: rgba(255,255,255,0.28); stroke-width: 2;
+                            animation: streakSlide var(--dur,5s) ease-in-out var(--delay,0s) infinite; }
+  .wind-streak.secondary,
+  .wind-streak.tertiary   { display: none; }
+}
+ 
+/* ── strong 40–70 km/h ── */
+.wind-strong {
+  .wind-streak            { stroke: rgba(255,255,255,0.44); stroke-width: 2.5;
+                            animation: streakSlide var(--dur,2.8s) ease-in-out var(--delay,0s) infinite; }
+  .wind-streak.secondary  { display: block; stroke: rgba(255,255,255,0.20); stroke-width: 1.5;
+                            animation: streakSlideReverse var(--dur,3.2s) ease-in-out var(--delay,0s) infinite; }
+  .wind-streak.tertiary   { display: none; }
+}
+ 
+/* ── extreme > 70 km/h ── */
+.wind-extreme {
+  .wind-streak            { stroke: rgba(255,255,255,0.64); stroke-width: 3;
+                            animation: streakSlide var(--dur,1.2s) linear var(--delay,0s) infinite; }
+  .wind-streak.secondary  { display: block; stroke: rgba(255,255,255,0.30); stroke-width: 2;
+                            animation: streakSlideReverse var(--dur,1.5s) linear var(--delay,0s) infinite; }
+  .wind-streak.tertiary   { display: block; stroke: rgba(255,255,255,0.16); stroke-width: 1.2;
+                            animation: streakSlide var(--dur,1s) linear var(--delay,0.1s) infinite; }
+}
+ 
+/* ── icon shake strong+ ── */
+.wind-strong .weather-icon,
+.wind-extreme .weather-icon {
+  animation: iconSway 0.55s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+  display: inline-block;
+}
+.wind-extreme .weather-icon { animation-duration: 0.28s; }
+ 
+@keyframes iconSway {
+  0%   { transform: translateX(-4px) rotate(-5deg); }
+  100% { transform: translateX( 4px) rotate( 5deg); }
+}
+ 
+/* ── streak keyframes ── */
+@keyframes streakSlide {
+  0%   { stroke-dashoffset:  900; opacity: 0; }
+  8%   { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { stroke-dashoffset: -200; opacity: 0; }
+}
+@keyframes streakSlideReverse {
+  0%   { stroke-dashoffset: -900; opacity: 0; }
+  8%   { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { stroke-dashoffset:  200; opacity: 0; }
+}
+ 
+/* ==============================================
+   CARD TOP ROW  (city left  |  icon right)
+============================================== */
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+  gap: 12px;
+}
+ 
+.city-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+ 
+.city-name {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  line-height: 1.05;
+  margin: 0;
+  text-shadow: 0 2px 14px rgba(0,0,0,0.16);
+  /* prevent very long city names from pushing the icon off */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 380px;
+}
+ 
+.country {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.26);
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  width: fit-content;
+  backdrop-filter: blur(4px);
+}
+ 
+/* ── weather icon top-right ── */
+.weather-icon {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 10px rgba(0,0,0,0.20));
+  /* if onerror fires the element is hidden — no orange placeholder */
+}
+ 
+/* ==============================================
+   DESCRIPTION
+============================================== */
+.description {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.80);
+  letter-spacing: 0.15px;
+  margin: 8px 20px 0;
+  padding: 0;
+}
+ 
+/* ==============================================
+   TEMPERATURE
+============================================== */
+.temperature {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 12px 20px 2px 30px; 
+  padding-left: 20px;
+}
+ 
+.temp-main {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+  text-shadow: 0 3px 16px rgba(0,0,0,0.16);
+}
+ 
+.feels-like {
+  font-size: 0.86rem;
+  color: rgba(255,255,255,0.68);
+  font-weight: 400;
+}
+ 
+/* ==============================================
+   TEMP RANGE
+============================================== */
+.temp-range {
+  display: flex;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.68);
+  font-weight: 500;
+  margin: 0 20px 14px;
+}
+ 
+/* ==============================================
+   DIVIDER
+============================================== */
+.card-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  margin: 0 20px 14px;
+}
+ 
+/* ==============================================
+   DETAIL CARDS — 3-column grid, all identical
+============================================== */
+.weather-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+ 
+.detail-item {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 12px 8px 10px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.18s, transform 0.18s;
+ 
+  &:hover {
+    background: rgba(255,255,255,0.17);
+    transform: translateY(-2px);
+  }
+}
+ 
+.detail-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+ 
+.detail-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.55px;
+  color: rgba(255,255,255,0.60);
+}
+ 
+.detail-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+ 
+/* ==============================================
+   MAT-CHIP inside detail cards
+   (scoped to .weather-card to avoid leaks)
+============================================== */
+::ng-deep .weather-card .mat-mdc-chip {
+  height: 26px !important;
+  min-height: unset !important;
+  border-radius: 999px !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  padding: 0 10px !important;
+  line-height: 26px !important;
+ 
+  background: rgba(255,255,255,0.16) !important;
+  color: white !important;
+  border: 1px solid rgba(255,255,255,0.26) !important;
+ 
+  --mdc-chip-hover-state-layer-opacity: 0 !important;
+  cursor: default !important;
+ 
+  .mat-mdc-chip-action-label { color: white !important; }
+ 
+  transition: background 0.18s ease !important;
+  &:hover { background: rgba(255,255,255,0.26) !important; }
+}
+ 
+/* shorthand class used in HTML for chip inside detail-item */
+.detail-chip { }
+ 
+/* ==============================================
+   ENTRY ANIMATION
+============================================== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+ 
